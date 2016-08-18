@@ -9,7 +9,7 @@ def analyze(skip_number):
     for files in os.walk(rootdir):
         # print files[2:][0][:-1]
         for f in files[2:][0][:-1]:
-            # print f
+            print f
             c=1
             total = 0
             f_name = f[:-4]
@@ -26,18 +26,22 @@ def analyze(skip_number):
 
             while rval:
                 rval, frame = vc.read()
+                out = open(directory + '/' + f_text + '.txt', "a")
+                time = vc.get(cv.CV_CAP_PROP_POS_MSEC)
                 if skip_number == 0:
                     cv2.imwrite(directory +'/'+str(c).zfill(4) + '.jpg',frame)
+                    out.write(str(c).zfill(4) + " " + str(time) + "\n")
 
                 elif (skip_number != 0) and (c % skip_number == 1):
                     cv2.imwrite(directory +'/'+str(c).zfill(4) + '.jpg', frame)
+                    out.write(str(c).zfill(4) + " " + str(time) + "\n")
 
-                time = vc.get(cv.CV_CAP_PROP_POS_MSEC)
+
                 total_frames = vc.get(cv.CV_CAP_PROP_FRAME_COUNT)
                 frame_rate = vc.get(cv.CV_CAP_PROP_FPS)
                 length = (round(total_frames/frame_rate, 2))
-                out = open(directory + '/' + f_text + '.txt', "a")
-                out.write(str(c).zfill(4) + " " + str(time) + "\n")
+
+
 
 
                 c = c + 1
@@ -48,5 +52,6 @@ def analyze(skip_number):
             out2.write(f + " " + str(total_frames) + ' ' + str(length) + "\n")
 
     vc.release()
+    print '*** Video Analysis Complete. Results in output directory ***'
 
-analyze(2)
+analyze(4)
